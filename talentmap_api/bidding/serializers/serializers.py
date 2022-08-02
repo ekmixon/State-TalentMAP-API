@@ -15,8 +15,7 @@ class BidCycleSerializer(PrefetchedSerializer):
 
         # Convert incoming string dates into date objects for validation
         for date_key in ["cycle_end_date", "cycle_deadline_date", "cycle_start_date"]:
-            date = datasource.get(date_key, None)
-            if date:
+            if date := datasource.get(date_key, None):
                 datasource[date_key] = ensure_date(date)
 
         # Update our current data if we have any with new data
@@ -94,11 +93,10 @@ class SurveySerializer(PrefetchedSerializer):
     calculated_values = serializers.SerializerMethodField()
 
     def get_calculated_values(self, obj):
-        calculated_values = {}
-        calculated_values['is_fairshare'] = obj.user.is_fairshare
-        calculated_values['is_six_eight'] = obj.user.is_six_eight
-
-        return calculated_values
+        return {
+            'is_fairshare': obj.user.is_fairshare,
+            'is_six_eight': obj.user.is_six_eight,
+        }
 
     class Meta:
         model = StatusSurvey
@@ -223,9 +221,7 @@ class BidWritableSerializer(PrefetchedSerializer):
     def validate(self, data):
         datasource = self.initial_data
 
-        # Convert incoming string dates into date objects for validation
-        date = datasource.get('scheduled_panel_date', None)
-        if date:
+        if date := datasource.get('scheduled_panel_date', None):
             datasource['scheduled_panel_date'] = ensure_date(date)
 
         # Update our current data if we have any with new data

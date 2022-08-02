@@ -18,7 +18,7 @@ def test_bidlist_fixture():
     tour_of_duty = mommy.make("organization.TourOfDuty", months=24)
     post = mommy.make("organization.Post", tour_of_duty=tour_of_duty)
     bidcycle = mommy.make(BidCycle, id=1, name="Bidcycle 1", active=True)
-    for i in range(5):
+    for _ in range(5):
         position = mommy.make('position.Position', post=post)
         bidcycle.positions.add(position)
     

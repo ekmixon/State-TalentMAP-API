@@ -52,13 +52,11 @@ class UserProfile(StaticRepresentationModel):
         '''
         display_name = ""
         if self.user.first_name:
-            display_name = self.user.first_name
+            return self.user.first_name
         elif self.user.username:
-            display_name = self.user.username
+            return self.user.username
         else:
-            display_name = self.user.email
-
-        return display_name
+            return self.user.email
 
     @property
     def initials(self):

@@ -77,15 +77,13 @@ class PrefetchedSerializer(serializers.ModelSerializer):
         # Iterate over our fields and modify the list as necessary
         for field in list(self.fields.keys()):
             # Ignore any fields that begin with _
-            if field[0] == "_":
+            if (
+                field[0] == "_"
+                or override_fields
+                and field not in override_fields
+                or field in override_exclude
+            ):
                 self.fields.pop(field)
-            # If we have overridden fields, remove fields not present in the requested list
-            elif override_fields and field not in override_fields:
-                self.fields.pop(field)
-            # If we have overridden exclusions, remove fields present in the exclusion list
-            elif field in override_exclude:
-                self.fields.pop(field)
-            # Deny write access to all fields unless explicitly stated
             elif field not in writable_fields:
                 self.fields[field].read_only = True
 
@@ -114,8 +112,7 @@ class PrefetchedSerializer(serializers.ModelSerializer):
 
         # Get a list of writable fields
         writable_fields = self.get_writable_fields()
-        invalid_fields = [x for x in data.keys() if x not in writable_fields]
-        if len(invalid_fields) > 0:
+        if invalid_fields := [x for x in data.keys() if x not in writable_fields]:
             raise serializers.ValidationError(f"The following fields are not writable: {', '.join(invalid_fields)}")
         return data
 
@@ -169,7 +166,7 @@ class PrefetchedSerializer(serializers.ModelSerializer):
                 # Skip this field if we don't have a nested field
                 if len(split_field) == 1:
                     continue
-                if split_field[0] == name or split_field[0] == nested.get("field", ""):
+                if split_field[0] in [name, nested.get("field", "")]:
                     child_overrides.append(LOOKUP_SEP.join(split_field[1:]))
 
             # If we have child overrides, attach them to the child's kwargs
@@ -204,16 +201,14 @@ class PrefetchedSerializer(serializers.ModelSerializer):
             internal_type = field.get_internal_type()
             method = None
             # If this attribute is present, we are fetching a reverse-lookup, and need to use prefetch_related
-            if hasattr(field, 'related_name'):
+            if (
+                hasattr(field, 'related_name')
+                or internal_type not in select_related_field_types
+                and internal_type in prefetch_field_types
+            ):
                 method = "prefetch_related"
-            # If we're a forward-lookup, we need to check the related field types
-            # For OneToOne and ForeignKey, use select_related
             elif internal_type in select_related_field_types:
                 method = "select_related"
-            # Use prefetch_related for "many" relationships
-            elif internal_type in prefetch_field_types:
-                method = "prefetch_related"
-            # Otherwise, we're just a base field and can skip
             else:
                 continue
 
@@ -225,12 +220,10 @@ class PrefetchedSerializer(serializers.ModelSerializer):
             # Call the appropriate prefetch method
             queryset = getattr(queryset, method)(f"{prefix}{field.name}")
             # If we have a related model to step into, do so
-            if field.related_model != model:
-                # If our serializer has a meta class (it should if it is a PrefetchedSerializer)
-                if hasattr(cls.Meta, "nested"):
-                    nested_serializer_class = cls.Meta.nested.get(field.name, None)
-                    # If we have a nested serializer class, use it to prefetch the next level of fields
-                    if nested_serializer_class:
-                        queryset = nested_serializer_class.get("class").prefetch_model(field.related_model, queryset, parent_method=method, prefix=f"{prefix}{field.name}{LOOKUP_SEP}", visited=visited)
+            if field.related_model != model and hasattr(cls.Meta, "nested"):
+                if nested_serializer_class := cls.Meta.nested.get(
+                    field.name, None
+                ):
+                    queryset = nested_serializer_class.get("class").prefetch_model(field.related_model, queryset, parent_method=method, prefix=f"{prefix}{field.name}{LOOKUP_SEP}", visited=visited)
 
         return queryset

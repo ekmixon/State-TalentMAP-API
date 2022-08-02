@@ -10,7 +10,7 @@ from talentmap_api.bidding.models import Bid
 
 @pytest.fixture()
 def test_clients_fixture():
-    for _ in range(0, 10):
+    for _ in range(10):
         client_for_profile()
 
 

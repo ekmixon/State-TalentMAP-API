@@ -55,7 +55,7 @@ def test_task_tag_filters(authorized_client, authorized_user):
 def test_task_update(authorized_client, authorized_user):
     assert Task.objects.count() == 1
     task = Task.objects.get(id=1)
-    assert not task.priority == 1
+    assert task.priority != 1
 
     response = authorized_client.patch('/api/v1/task/1/', data=json.dumps(
         {

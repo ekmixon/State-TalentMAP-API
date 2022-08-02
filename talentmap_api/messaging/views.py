@@ -114,15 +114,26 @@ class ShareView(FieldLimitableSerializerMixin,
         valid, error = self.validate(request)
         user = self.request.user
 
-        if valid:
-            response = None
-            if "@state.gov" in request.data.get("email"):
-                response = self.internal_share(user, request.data.get("email"), request.data.get("type"), request.data.get("id"))
-            else:
-                response = self.email_share(user, request.data.get("email"), request.data.get("type"), request.data.get("id"))
-            return response
-        else:
+        if not valid:
             return Response({"message": error}, status=status.HTTP_400_BAD_REQUEST)
+        response = None
+        response = (
+            self.internal_share(
+                user,
+                request.data.get("email"),
+                request.data.get("type"),
+                request.data.get("id"),
+            )
+            if "@state.gov" in request.data.get("email")
+            else self.email_share(
+                user,
+                request.data.get("email"),
+                request.data.get("type"),
+                request.data.get("id"),
+            )
+        )
+
+        return response
 
     def validate(self, request):
         '''

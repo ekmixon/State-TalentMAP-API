@@ -8,8 +8,8 @@ class Migration(migrations.Migration):
     Data migration to set the formal description for any currently existing languages
     '''
 
-    def set_formal_name(apps, schema_editor):
-        Language = apps.get_model('language', 'Language')
+    def set_formal_name(self, schema_editor):
+        Language = self.get_model('language', 'Language')
         for lang in Language.objects.all():
             lang.formal_description = LANGUAGE_FORMAL_NAMES.get(lang.short_description, lang.short_description)
             lang.save()

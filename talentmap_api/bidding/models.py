@@ -413,9 +413,7 @@ def waiver_status_changed(sender, instance, **kwargs):
                                             tags=['waiver', f'{instance.status}'],
                                             message=notification_bodies['denied_owner'])
 
-    else:
-        # It's a new waiver request, notify the CDO
-        if instance.user.cdo:
-            Notification.objects.create(owner=instance.user.cdo,
-                                        tags=['waiver', f'{instance.status}'],
-                                        message=notification_bodies['requested_cdo'])
+    elif instance.user.cdo:
+        Notification.objects.create(owner=instance.user.cdo,
+                                    tags=['waiver', f'{instance.status}'],
+                                    message=notification_bodies['requested_cdo'])

@@ -13,7 +13,7 @@ from talentmap_api.bidding.models import BidCycle, Bid
 @pytest.fixture
 def test_bidlist_fixture():
     bidcycle = mommy.make(BidCycle, id=1, name="Bidcycle 1", active=True)
-    for i in range(5):
+    for _ in range(5):
         bidcycle.positions.add(mommy.make('position.Position'))
 
 
@@ -34,7 +34,7 @@ def test_bid_bidder_actions(authorized_client, authorized_user):
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     # Get our bidlist, and validate that the position is in the list as a draft
-    response = authorized_client.get(f'/api/v1/bidlist/')
+    response = authorized_client.get('/api/v1/bidlist/')
 
     assert response.status_code == status.HTTP_200_OK
 
@@ -106,7 +106,7 @@ def test_bid_bidder_priority_restrictions(authorized_client, authorized_user):
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     # Get our bidlist, and validate that the position is in the list as a draft
-    response = authorized_client.get(f'/api/v1/bidlist/')
+    response = authorized_client.get('/api/v1/bidlist/')
 
     assert response.status_code == status.HTTP_200_OK
 

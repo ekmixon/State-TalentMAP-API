@@ -12,7 +12,7 @@ def test_user_permission_endpoint(authorized_client, authorized_user):
     group.permissions.add(permission)
     group.user_set.add(authorized_user)
 
-    response = authorized_client.get(f'/api/v1/permission/user/')
+    response = authorized_client.get('/api/v1/permission/user/')
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["groups"] == [group.name]

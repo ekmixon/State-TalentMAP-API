@@ -249,7 +249,7 @@ class Location(StaticRepresentationModel):
     def __str__(self):
         string = ", ".join([x for x in [self.city, self.state] if x])
         if self.country and self.country.code != "USA":
-            string = f"{self.country.short_name}, " + string
+            string = f"{self.country.short_name}, {string}"
         return string
 
     class Meta:

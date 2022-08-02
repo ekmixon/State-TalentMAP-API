@@ -20,8 +20,6 @@ class PrePanelSerializer(PrefetchedSerializer):
     prepanel = serializers.SerializerMethodField()
 
     def get_prepanel(self, obj):
-        prepanel = {}
-
         user = UserProfileSerializer.prefetch_model(UserProfile, UserProfile.objects.all()).get(id=obj.user.id)
         position = PositionSerializer.prefetch_model(Position, Position.objects.all()).get(id=obj.position.position.id)
         waivers = obj.waivers
@@ -30,7 +28,12 @@ class PrePanelSerializer(PrefetchedSerializer):
         if not sii:
             return "Bidder has not submitted a self-identification survey for this bidcycle"
 
-        prepanel['fairshare'] = self.generate_prepanel_fairshare(user, position, waivers, sii)
+        prepanel = {
+            'fairshare': self.generate_prepanel_fairshare(
+                user, position, waivers, sii
+            )
+        }
+
         prepanel['six_eight'] = self.generate_prepanel_six_eight(user, position, waivers, sii)
         prepanel['language'] = self.generate_prepanel_language(user, position, waivers)
         prepanel['skill'] = self.generate_prepanel_skill(user, position, waivers)
@@ -62,8 +65,9 @@ class PrePanelSerializer(PrefetchedSerializer):
         reading_proficiency_match = True
         spoken_proficiency_match = True
         for language in list(position.languages.all()):
-            user_language = user.language_qualifications.filter(language=language.language).first()
-            if user_language:
+            if user_language := user.language_qualifications.filter(
+                language=language.language
+            ).first():
                 reading_proficiency_match = language.reading_proficiency > user_language.reading_proficiency
                 spoken_proficiency_match = language.spoken_proficiency > user_language.spoken_proficiency
             else:

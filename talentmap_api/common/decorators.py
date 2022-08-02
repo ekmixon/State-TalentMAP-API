@@ -10,9 +10,13 @@ def respect_instance_signalling():
     def _respect_instance_signalling(signal_func):
         @wraps(signal_func)
         def _decorator(sender, instance, **kwargs):
-            if hasattr(instance, '_disable_signals'):
-                if instance._disable_signals:
-                    return None
+            if (
+                hasattr(instance, '_disable_signals')
+                and instance._disable_signals
+            ):
+                return None
             return signal_func(sender, instance, **kwargs)
+
         return _decorator
+
     return _respect_instance_signalling

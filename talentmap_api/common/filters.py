@@ -171,7 +171,4 @@ def filter_or_exclude_queryset(queryset, filters, exclude=False):
     '''
     Filters or excludes a queryset based upon specified q_obj filters
     '''
-    if exclude:
-        return queryset.exclude(filters)
-    else:
-        return queryset.filter(filters)
+    return queryset.exclude(filters) if exclude else queryset.filter(filters)

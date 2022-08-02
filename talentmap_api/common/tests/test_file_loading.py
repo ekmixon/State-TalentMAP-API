@@ -336,8 +336,8 @@ def test_xml_skill_cone_loading():
     interfunctional = SkillCone.objects.filter(name="Interfunctional").first()
 
     # Do a set comparison so we don't have to care about order
-    assert set(management.skill_codes) - set(['1', '2', '3', '4']) == set()
-    assert set(interfunctional.skill_codes) - set(['5', '6', '7', '8', '9']) == set()
+    assert set(management.skill_codes) - {'1', '2', '3', '4'} == set()
+    assert set(interfunctional.skill_codes) - {'5', '6', '7', '8', '9'} == set()
 
     assert Skill.objects.filter(code__in=management.skill_codes, cone=management).count() == 4
     assert Skill.objects.filter(code__in=interfunctional.skill_codes, cone=interfunctional).count() == 5

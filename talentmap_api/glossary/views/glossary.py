@@ -40,12 +40,12 @@ class GlossaryView(FieldLimitableSerializerMixin,
     filter_class = GlossaryEntryFilter
 
     def perform_create(self, serializer):
-        in_group_or_403(self.request.user, f"glossary_editors")
+        in_group_or_403(self.request.user, "glossary_editors")
         instance = serializer.save(last_editing_user=self.request.user.profile)
         logger.info(f"User {self.request.user.id}:{self.request.user} creating glossary entry {instance}")
 
     def perform_update(self, serializer):
-        in_group_or_403(self.request.user, f"glossary_editors")
+        in_group_or_403(self.request.user, "glossary_editors")
         instance = serializer.save(last_editing_user=self.request.user.profile)
         logger.info(f"User {self.request.user.id}:{self.request.user} updating glossary entry {instance}")
 

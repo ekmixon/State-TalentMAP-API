@@ -39,7 +39,7 @@ def test_position_endpoints_fixture():
 
     is_overseas = [True, False]
     # Create some junk positions to add numbers
-    for _ in range(0, 8):
+    for _ in range(8):
         bc.positions.add(mommy.make('position.Position',
                                     organization=mommy.make_recipe('talentmap_api.organization.tests.orphaned_organization'),
                                     bureau=mommy.make_recipe('talentmap_api.organization.tests.orphaned_organization'),

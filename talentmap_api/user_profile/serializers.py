@@ -217,12 +217,7 @@ class SavedSearchSerializer(PrefetchedSerializer):
     owner = serializers.StringRelatedField(read_only=True)
 
     def validate(self, data):
-        # We'll need the endpoint to validate our filters, so determine if our
-        # datasource is an instance or a fresh object (in which case we use initial data)
-        datasource = self.initial_data
-        if self.instance:
-            datasource = self.instance.__dict__
-
+        datasource = self.instance.__dict__ if self.instance else self.initial_data
         # The endpoint to test our filters against is either the one stored, or the incoming endpoint
         endpoint = data.get("endpoint", datasource.get("endpoint"))
         # Likewise for the filters

@@ -69,7 +69,7 @@ def test_endpoints_list(authorized_client, authorized_user, endpoint, model, rec
     # Create a random amount of objects from the recipe, if it is given
     if recipe:
         if callable(recipe):
-            for i in range(0, number):
+            for _ in range(number):
                 recipe()
         else:
             mommy.make_recipe(recipe, _quantity=number)
@@ -94,7 +94,7 @@ def test_endpoints_retrieve(authorized_client, authorized_user, endpoint, model,
     # Create a random amount of objects from the recipe, if it is given
     if recipe:
         if callable(recipe):
-            for i in range(0, number):
+            for _ in range(number):
                 recipe()
         else:
             mommy.make_recipe(recipe, _quantity=number)

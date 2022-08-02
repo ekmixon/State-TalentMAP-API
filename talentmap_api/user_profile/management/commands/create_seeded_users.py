@@ -28,7 +28,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         positions = list(set(Position.objects.filter(bureau__code="150000").values_list('id', flat=True)))
-        positions = positions + list(set(Position.objects.filter(bureau__isnull=False).exclude(bureau__code="150000").order_by('bureau__code').values_list('id', flat=True)))
+        positions += list(
+            set(
+                Position.objects.filter(bureau__isnull=False)
+                .exclude(bureau__code="150000")
+                .order_by('bureau__code')
+                .values_list('id', flat=True)
+            )
+        )
+
         for data in self.USERS:
             try:
                 try:
@@ -60,10 +68,10 @@ class Command(BaseCommand):
                 group.user_set.add(user)
 
                 if data[5]:
-                    group = get_group_by_name(f"bureau_ao")
+                    group = get_group_by_name("bureau_ao")
                     group.user_set.add(user)
 
-                    group = get_group_by_name(f"bureau_ao:150000")
+                    group = get_group_by_name("bureau_ao:150000")
                     group.user_set.add(user)
 
                 if data[6]:

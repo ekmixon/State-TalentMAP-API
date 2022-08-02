@@ -53,7 +53,7 @@ def test_soap_integrations():
     call_command('synchronize_data', '--model', 'position.Skill', '--test')
 
     first_skill = Skill.objects.get(id=first_skill.id)
-    assert not first_skill.description == "Ring making"
+    assert first_skill.description != "Ring making"
 
     call_command('schedule_synchronization_job', 'position.Skill', '10')
 
@@ -102,7 +102,7 @@ def test_soap_job_functions():
     call_command('schedule_synchronization_job', '--stop-running')
 
     job.refresh_from_db()
-    assert job.running == False
+    assert not job.running
 
 @pytest.mark.django_db(transaction=True)
 def test_soap_bidcycle_active():

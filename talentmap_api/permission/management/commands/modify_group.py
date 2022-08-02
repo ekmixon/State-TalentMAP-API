@@ -19,8 +19,7 @@ class Command(BaseCommand):
         parser.add_argument('group', nargs=1, type=str, help="The group name")
 
     def handle(self, *args, **options):
-        group = Group.objects.get(name=options['group'][0])
-        if group:
+        if group := Group.objects.get(name=options['group'][0]):
             self.logger.info(f"Group modificiation command: {options['mode'][0]} {options['email'][0]} to {options['group'][0]}")
             if options['mode'][0] == 'add':
                 User.objects.get(email=options['email'][0]).groups.add(group)

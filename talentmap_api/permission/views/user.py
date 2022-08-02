@@ -29,8 +29,7 @@ class UserPermissionView(FieldLimitableSerializerMixin,
                         status=status.HTTP_200_OK)
 
     def construct_return_object(self, user):
-        permission_dict = {}
-        permission_dict["user"] = UserSerializer(user).data
+        permission_dict = {"user": UserSerializer(user).data}
         permission_dict["groups"] = list(user.groups.values_list("name", flat=True))
         permission_dict["permissions"] = list(user.get_all_permissions())
         return permission_dict

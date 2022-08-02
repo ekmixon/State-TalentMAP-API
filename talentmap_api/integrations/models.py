@@ -113,16 +113,16 @@ class SynchronizationJob(models.Model):
                         soap_arguments['PaginationStartKey'] = previous_lpsk
                         logger.info(f"Requesting page from primary key: {loader.last_pagination_start_key}")
                     else:
-                        logger.info(f"Requesting first page")
+                        logger.info("Requesting first page")
 
                     # Get the data
                     response_xml = None
-                    attempts = 0
                     pre_data_time = datetime.datetime.now()
                     max_attempts = int(get_delineated_environment_variable('SOAP_MAX_ATTEMPTS', 5))
                     if not test:  # pragma: no cover
+                        attempts = 0
                         while not response_xml and attempts <= max_attempts:
-                            attempts = attempts + 1
+                            attempts += 1
                             try:
                                 with client.options(timeout=int(get_delineated_environment_variable('SOAP_TIMEOUT', 180))):
                                     response_xml = ET.tostring(getattr(client.service, soap_function_name)(**soap_arguments), encoding="unicode")

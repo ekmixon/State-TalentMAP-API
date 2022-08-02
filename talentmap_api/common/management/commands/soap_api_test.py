@@ -37,7 +37,7 @@ class Command(BaseCommand):
         if not isinstance(response, str):
             response = ET.tostring(response, pretty_print=True)
 
-        self.logger.info(f'SOAP call response:')
+        self.logger.info('SOAP call response:')
         self.logger.info(response.decode('unicode_escape'))
 
         self.logger.info(f'Dictionary parsed response: {pp.pformat(dict_response)}')

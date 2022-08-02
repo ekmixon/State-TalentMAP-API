@@ -262,9 +262,9 @@ def get_filtered_queryset(filter_class, filters):
     # Your daily dose of python wizardry: https://docs.python.org/3/library/functions.html#type
     fake_request = type('obj', (object,), {'query_params': query_params})
 
-    queryset = filter_class.get_subset(query_params)(data=query_params, request=fake_request).qs
-
-    return queryset
+    return filter_class.get_subset(query_params)(
+        data=query_params, request=fake_request
+    ).qs
 
 
 def get_permission_by_name(name):

@@ -34,10 +34,7 @@ class CurrentAssignmentSerializer(PrefetchedSerializer):
     tour_of_duty = StaticRepresentationField(read_only=True)
 
     def get_user(self, obj):
-        if obj.user and obj.user.user:
-            return obj.user.user.last_name
-        else:
-            return ""
+        return obj.user.user.last_name if obj.user and obj.user.user else ""
 
     class Meta:
         model = Assignment
@@ -297,10 +294,7 @@ class AssignmentPositionSerializer(PrefetchedSerializer):
     # This method returns the string representation of the bureau, or the code
     # if it doesn't currently exist in the database
     def get_bureau(self, obj):
-        if obj.bureau:
-            return obj.bureau._string_representation
-        else:
-            return obj._bureau_code
+        return obj.bureau._string_representation if obj.bureau else obj._bureau_code
 
     # This method returns the string representation of the parent org, or the code
     # if it doesn't currently exist in the database

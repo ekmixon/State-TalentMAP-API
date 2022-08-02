@@ -35,10 +35,7 @@ class XMLloader():
         self.collision_field = collision_field
         self.override_loading_method = override_loading_method
         self.last_pagination_start_key = None
-        if logger:
-            self.logger = logger
-        else:
-            self.logger = logging.getLogger(__name__)
+        self.logger = logger or logging.getLogger(__name__)
 
     def create_models_from_xml(self, xml, raw_string=False):
         '''
@@ -143,8 +140,7 @@ class XMLloader():
 
         # Check for collisions
         if self.collision_field:
-            q_kwargs = {}
-            q_kwargs[self.collision_field] = getattr(instance, self.collision_field)
+            q_kwargs = {self.collision_field: getattr(instance, self.collision_field)}
             self.last_tag_collision_field = getattr(instance, self.collision_field)
             collisions = type(instance).objects.filter(**q_kwargs)
             if collisions.count() > 1:
@@ -229,8 +225,7 @@ class CSVloader():
 
                 # Check for collisions
                 if self.collision_field:
-                    q_kwargs = {}
-                    q_kwargs[self.collision_field] = getattr(instance, self.collision_field)
+                    q_kwargs = {self.collision_field: getattr(instance, self.collision_field)}
                     collisions = type(instance).objects.filter(**q_kwargs)
                     if collisions.count() > 1:
                         logging.getLogger(__name__).warn(f"Looking for collision on {type(instance).__name__}, field {self.collision_field}, value {getattr(instance, self.collision_field)}; found {collisions.count()}. Skipping item.")

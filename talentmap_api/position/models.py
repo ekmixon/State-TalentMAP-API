@@ -167,16 +167,18 @@ class Position(StaticRepresentationModel):
         # Update language requirements
         self.languages.clear()
         if self._language_1_code:
-            qualification = Qualification.get_or_create_by_codes(self._language_1_code,
-                                                                 self._language_1_reading_proficiency_code,
-                                                                 self._language_1_spoken_proficiency_code)[0]
-            if qualification:
+            if qualification := Qualification.get_or_create_by_codes(
+                self._language_1_code,
+                self._language_1_reading_proficiency_code,
+                self._language_1_spoken_proficiency_code,
+            )[0]:
                 self.languages.add(qualification)
         if self._language_2_code:
-            qualification = Qualification.get_or_create_by_codes(self._language_2_code,
-                                                                 self._language_2_reading_proficiency_code,
-                                                                 self._language_2_spoken_proficiency_code)[0]
-            if qualification:
+            if qualification := Qualification.get_or_create_by_codes(
+                self._language_2_code,
+                self._language_2_reading_proficiency_code,
+                self._language_2_spoken_proficiency_code,
+            )[0]:
                 self.languages.add(qualification)
 
         # Update grade
@@ -350,9 +352,7 @@ class SkillCone(StaticRepresentationModel):
         skill_codes = self.skill_codes
 
         if same_cone.count() > 0:
-            # Add their skill codes to our skill code list
-            new_codes = [x.skill_codes for x in list(same_cone)]
-            if len(new_codes) > 0:
+            if new_codes := [x.skill_codes for x in list(same_cone)]:
                 # Use chain to flatten the list of lists
                 skill_codes += list(itertools.chain.from_iterable(new_codes))
                 # Eliminate duplicates
@@ -452,13 +452,13 @@ class Assignment(StaticRepresentationModel):
         if bid.status != talentmap_api.bidding.models.Bid.Status.approved:
             raise Exception("Only an approved bid may create an assignment.")
 
-        assignment = Assignment.objects.create(status=Assignment.Status.assigned,
-                                               user=bid.user,
-                                               position=bid.position.position,
-                                               tour_of_duty=bid.position.position.post.tour_of_duty,
-                                               bid_approval_date=bid.approved_date)
-
-        return assignment
+        return Assignment.objects.create(
+            status=Assignment.Status.assigned,
+            user=bid.user,
+            position=bid.position.position,
+            tour_of_duty=bid.position.position.post.tour_of_duty,
+            bid_approval_date=bid.approved_date,
+        )
 
     def __str__(self):
         return f"({self.status}) {self.user} at {self.position}"

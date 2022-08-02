@@ -6,6 +6,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -20,25 +22,43 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='capsuledescription',
             name='last_editing_user',
-            field=models.ForeignKey(help_text='The last user to edit this description', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='edited_capsule_descriptions', to='user_profile.UserProfile'),
+            field=models.ForeignKey(
+                help_text='The last user to edit this description',
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='edited_capsule_descriptions',
+                to='user_profile.UserProfile',
+            ),
         ),
         migrations.AddField(
             model_name='assignment',
             name='position',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assignments', to='position.Position'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='assignments',
+                to='position.Position',
+            ),
         ),
         migrations.AddField(
             model_name='assignment',
             name='tour_of_duty',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assignments', to='organization.TourOfDuty'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='assignments',
+                to='organization.TourOfDuty',
+            ),
         ),
         migrations.AddField(
             model_name='assignment',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assignments', to='user_profile.UserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='assignments',
+                to='user_profile.UserProfile',
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='positionbidstatistics',
-            unique_together=set([('bidcycle', 'position')]),
+            unique_together={('bidcycle', 'position')},
         ),
     ]

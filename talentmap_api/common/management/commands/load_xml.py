@@ -143,11 +143,7 @@ def mode_organizations():
                 "150000",
                 "160000"
             ]
-            if org.code in regional_codes:
-                org.is_regional = True
-            else:
-                org.is_regional = False
-
+            org.is_regional = org.code in regional_codes
             if org.code == org._parent_bureau_code:
                 org.is_bureau = True
 

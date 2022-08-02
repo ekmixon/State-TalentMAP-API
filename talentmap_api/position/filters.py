@@ -138,8 +138,7 @@ class PositionFilter(filters.FilterSet):
         '''
         start = timezone.now()
         end = start + relativedelta(years=value)
-        q_obj = {}
-        q_obj[LOOKUP_SEP.join([name, "gt"])] = start
+        q_obj = {LOOKUP_SEP.join([name, "gt"]): start}
         q_obj[LOOKUP_SEP.join([name, "lte"])] = end
         return queryset.filter(Q(**q_obj))
 
